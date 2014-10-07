@@ -5,4 +5,9 @@
         android:title="Jawbone Account"
         android:key="login"
         />
+
+    <PreferenceCategory android:title="About">
+        <Preference android:title="Version"
+            android:key="version"/>
+    </PreferenceCategory>
 </PreferenceScreen>

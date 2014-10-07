@@ -2,6 +2,7 @@ package org.c99.dashclockup;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -43,6 +44,12 @@ public class SettingsActivity extends PreferenceActivity {
         addPreferencesFromResource(R.xml.settings);
 
         findPreference("login").setOnPreferenceClickListener(loginClickListener);
+        try {
+            findPreference("version").setSummary(getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+        } catch (PackageManager.NameNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     Preference.OnPreferenceClickListener loginClickListener = new Preference.OnPreferenceClickListener() {
@@ -70,7 +77,7 @@ public class SettingsActivity extends PreferenceActivity {
             authScope.add(UpPlatformSdkConstants.UpPlatformAuthScope.MOVE_READ);
             Uri.Builder builder = OauthUtils.setOauthParameters(BuildConfig.CLIENT_ID, "http://localhost/dashclockup?", authScope);
 
-            Intent intent = new Intent(OauthWebViewActivity.class.getName());
+            Intent intent = new Intent(SettingsActivity.this, OauthWebViewActivity.class);
             intent.putExtra(UpPlatformSdkConstants.AUTH_URI, builder.build());
             startActivityForResult(intent, UpPlatformSdkConstants.JAWBONE_AUTHORIZE_REQUEST_CODE);
             return false;

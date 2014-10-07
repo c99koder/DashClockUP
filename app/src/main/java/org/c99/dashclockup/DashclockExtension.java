@@ -72,8 +72,6 @@ public class DashclockExtension extends DashClockExtension {
             ApiManager.getRequestInterceptor().setAccessToken(PreferenceManager.getDefaultSharedPreferences(this).getString(UpPlatformSdkConstants.UP_PLATFORM_ACCESS_TOKEN, ""));
             ApiManager.getRestApiInterface().getUser(UpPlatformSdkConstants.API_VERSION_STRING, getUserRequestListener);
             ApiManager.getRestApiInterface().getUsersGoals(UpPlatformSdkConstants.API_VERSION_STRING, getGoalRequestListener);
-            if(PreferenceManager.getDefaultSharedPreferences(this).contains("steps") && PreferenceManager.getDefaultSharedPreferences(this).contains("goal"))
-                update();
         } else {
             Intent i = new Intent(this, SettingsActivity.class);
             i.putExtra("doLogin", true);
@@ -98,6 +96,7 @@ public class DashclockExtension extends DashClockExtension {
                             .status(NumberFormat.getInstance().format(steps))
                             .expandedTitle(NumberFormat.getInstance().format(steps) + " Steps Today")
                             .expandedBody((int) (((float) steps / (float) goal) * 100.0) + "% of your " + NumberFormat.getInstance().format(goal) + " step goal")
+                            .clickIntent(getPackageManager().getLaunchIntentForPackage("com.jawbone.up"))
             );
         }
     }
