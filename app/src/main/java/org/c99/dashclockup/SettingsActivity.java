@@ -75,7 +75,7 @@ public class SettingsActivity extends PreferenceActivity {
             List<UpPlatformSdkConstants.UpPlatformAuthScope> authScope = new ArrayList<UpPlatformSdkConstants.UpPlatformAuthScope>();
             authScope.add(UpPlatformSdkConstants.UpPlatformAuthScope.BASIC_READ);
             authScope.add(UpPlatformSdkConstants.UpPlatformAuthScope.MOVE_READ);
-            Uri.Builder builder = OauthUtils.setOauthParameters(BuildConfig.CLIENT_ID, "http://localhost/dashclockup?", authScope);
+            Uri.Builder builder = OauthUtils.setOauthParameters(BuildConfig.CLIENT_ID, "https://localhost/dashclockup?", authScope);
 
             Intent intent = new Intent(SettingsActivity.this, OauthWebViewActivity.class);
             intent.putExtra(UpPlatformSdkConstants.AUTH_URI, builder.build());
