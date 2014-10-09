@@ -44,6 +44,13 @@ public class SettingsActivity extends PreferenceActivity {
         addPreferencesFromResource(R.xml.settings);
 
         findPreference("login").setOnPreferenceClickListener(loginClickListener);
+        findPreference("showCalories").setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object o) {
+                sendBroadcast(new Intent(DashclockExtension.REFRESH_INTENT));
+                return true;
+            }
+        });
         try {
             findPreference("version").setSummary(getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
         } catch (PackageManager.NameNotFoundException e) {
@@ -63,6 +70,7 @@ public class SettingsActivity extends PreferenceActivity {
             editor.remove("name");
             editor.remove("steps");
             editor.remove("goal");
+            editor.remove("calories");
             editor.commit();
 
             sendBroadcast(new Intent(DashclockExtension.REFRESH_INTENT));
@@ -75,6 +83,7 @@ public class SettingsActivity extends PreferenceActivity {
             List<UpPlatformSdkConstants.UpPlatformAuthScope> authScope = new ArrayList<UpPlatformSdkConstants.UpPlatformAuthScope>();
             authScope.add(UpPlatformSdkConstants.UpPlatformAuthScope.BASIC_READ);
             authScope.add(UpPlatformSdkConstants.UpPlatformAuthScope.MOVE_READ);
+            authScope.add(UpPlatformSdkConstants.UpPlatformAuthScope.MEAL_READ);
             Uri.Builder builder = OauthUtils.setOauthParameters(BuildConfig.CLIENT_ID, "https://localhost/dashclockup?", authScope);
 
             Intent intent = new Intent(SettingsActivity.this, OauthWebViewActivity.class);

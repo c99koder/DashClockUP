@@ -90,12 +90,16 @@ public class DashclockExtension extends DashClockExtension {
         if(PreferenceManager.getDefaultSharedPreferences(this).contains("steps") && PreferenceManager.getDefaultSharedPreferences(this).contains("goal")) {
             int steps = PreferenceManager.getDefaultSharedPreferences(this).getInt("steps", 0);
             int goal = PreferenceManager.getDefaultSharedPreferences(this).getInt("goal", 0);
+            int calories = (int)PreferenceManager.getDefaultSharedPreferences(this).getFloat("calories", 0);
+            String body = (int) (((float) steps / (float) goal) * 100.0) + "% of your " + NumberFormat.getInstance().format(goal) + " step goal";
+            if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("showCalories", false))
+                body += "\n" + calories + " Calories to go";
             publishUpdate(new ExtensionData()
                             .visible(true)
                             .icon(R.drawable.ic_up)
                             .status(NumberFormat.getInstance().format(steps))
                             .expandedTitle(NumberFormat.getInstance().format(steps) + " Steps Today")
-                            .expandedBody((int) (((float) steps / (float) goal) * 100.0) + "% of your " + NumberFormat.getInstance().format(goal) + " step goal")
+                            .expandedBody(body)
                             .clickIntent(getPackageManager().getLaunchIntentForPackage("com.jawbone.up"))
             );
         }
@@ -107,6 +111,18 @@ public class DashclockExtension extends DashClockExtension {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(DashclockExtension.this);
             SharedPreferences.Editor editor = preferences.edit();
             editor.putInt("goal", result.get("data").getAsJsonObject().get("move_steps").getAsInt());
+            if(PreferenceManager.getDefaultSharedPreferences(DashclockExtension.this).getBoolean("showCalories", false)) {
+                if (result.get("data").getAsJsonObject().get("remaining_for_day").getAsJsonObject().has("intake_calories_remaining")) {
+                    editor.putFloat("calories", result.get("data").getAsJsonObject().get("remaining_for_day").getAsJsonObject().get("intake_calories_remaining").getAsFloat());
+                } else {
+                    editor.remove(UpPlatformSdkConstants.UP_PLATFORM_REFRESH_TOKEN);
+                    editor.remove(UpPlatformSdkConstants.UP_PLATFORM_ACCESS_TOKEN);
+                    editor.remove("name");
+                    editor.remove("steps");
+                    editor.remove("goal");
+                    editor.remove("calories");
+                }
+            }
             editor.commit();
             ApiManager.getRestApiInterface().getMoveEventsList(UpPlatformSdkConstants.API_VERSION_STRING, null, getMovesRequestListener);
         }
