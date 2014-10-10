@@ -92,8 +92,13 @@ public class DashclockExtension extends DashClockExtension {
             int goal = PreferenceManager.getDefaultSharedPreferences(this).getInt("goal", 0);
             int calories = (int)PreferenceManager.getDefaultSharedPreferences(this).getFloat("calories", 0);
             String body = (int) (((float) steps / (float) goal) * 100.0) + "% of your " + NumberFormat.getInstance().format(goal) + " step goal";
-            if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("showCalories", false))
-                body += "\n" + calories + " Calories to go";
+            if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("showCalories", false)) {
+                body += "\n" + NumberFormat.getInstance().format(Math.abs(calories)) + " Calories ";
+                if(calories < 0)
+                    body += "over";
+                else
+                    body += "to go";
+            }
             publishUpdate(new ExtensionData()
                             .visible(true)
                             .icon(R.drawable.ic_up)
