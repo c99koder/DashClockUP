@@ -99,13 +99,17 @@ public class DashclockExtension extends DashClockExtension {
                 else
                     body += "to go";
             }
+            Intent i = getPackageManager().getLaunchIntentForPackage("com.jawbone.up");
+            if(i == null)
+                i = getPackageManager().getLaunchIntentForPackage("com.jawbone.upopen");
+
             publishUpdate(new ExtensionData()
                             .visible(true)
                             .icon(R.drawable.ic_up)
                             .status(NumberFormat.getInstance().format(steps))
                             .expandedTitle(NumberFormat.getInstance().format(steps) + " Steps Today")
                             .expandedBody(body)
-                            .clickIntent(getPackageManager().getLaunchIntentForPackage("com.jawbone.up"))
+                            .clickIntent(i)
             );
         }
     }
